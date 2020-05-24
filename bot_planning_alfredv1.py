@@ -1,43 +1,55 @@
-import pandas as pd 
-import numpy as np 
-from time import strftime 
-planning = pd.read_csv("planning.csv")
-def planning_day():
-    date_du_jour = strftime("%d:%m:%Y")
+from time import strftime
+from datetime import timedelta
+from datetime import datetime
+import time
+import pandas as pd
 
-    # ajoute une colone pour ouvrir la journée
-    if (planning.loc[planning["Date"] == date_du_jour].shape[0] == 0):
-        columns_day = planning.shape[0]
-        planning.loc[columns_day, "Date"] = date_du_jour
-        planning.to_csv("planning.csv")
-        return(columns_day)
-    # et si la journne est deja ouvert on ne la recree pas
-    elif (planning.loc[planning["Date"] == date_du_jour].shape[0] == 1): 
-        columns_day = planning.shape[0]
-        return(columns_day-1)
-    else:
-        print("error bad create column_day")
-    
+class Planning_Alfredv1:
 
-def ajout_planning(categorie, columns_day):
-    heure_actuelle = strftime("%H%M%S")
-    # je verifie qu'elle est vide et je lui met le debut de la duree 
-    if (pd.isnull(planning.loc[columns_day, categorie])) == True: 
-        planning.loc[columns_day, categorie] = "en court start:" + heure_actuelle
-        planning.to_csv("planning.csv")
-    # si c'est pas le cas je recupere le debut debut de la duree 
-    # et je le soutrait a l'heure actuelle
-    elif (pd.isnull(planning.loc[columns_day, categorie])) == False:            
-        index = planning.loc[columns_day, categorie]
-        heure = index[15]+index[16]+index[17]+index[18]+index[19]+index[20]
-        temp_passe = (int(heure_actuelle) - int(heure)) / 60
-        return(temp_passe)
+    def __init__(self):
+        self.planning = pd.read_csv("planning.csv", index_col = [0])
 
-def stop(temps_passe, columns_day, categorie):
-    planning.loc[columns_day, categorie] = temps_passe
+    def planning_day(self):
 
-temps_passe = ajout_planning("Code", planning_day())
-stop(temps_passe, planning_day,"Code")
+        date_of_day = strftime("%d:%m:%Y")
+        get_day = self.planning.loc[self.planning["Date"] == date_of_day].shape[0]
+        line_today = self.planning.shape[0]
+
+        if (get_day == 0):
+            self.planning.loc[line_today, "Date"] = date_of_day
+            self.planning.to_csv("planning.csv")
+            return(line_today)
+        else:
+            return(line_today-1)
+
+    def add_planning(self, categorie, day):
+        hour_now = timedelta (hours = time.localtime().tm_hour, minutes = time.localtime().tm_min)
+        cheked_emply = pd.isnull(self.planning.loc[day, categorie])
+
+        if(cheked_emply == True):
+            self.planning.loc[day, categorie] = hour_now
+            self.planning.to_csv("planning.csv")
+        else:
+            get_hour_in_planning = self.planning.loc[day, categorie].split(':')
+            hour = timedelta (hours = int(get_hour_in_planning[0]), minutes = int(get_hour_in_planning[1]))
+            return(hour_now - hour)
+
+    def stop(self, day, categorie, time):
+        cheked_emply = pd.isnull(self.planning.loc[day, categorie])
+        hour2 = timedelta(hours= 0, minutes=0)
+        if(cheked_emply == False):
+            get_hour_in_planning2 = self.planning.loc[day,"temp " + categorie].split(':')
+            hour2 = timedelta (hours = int(get_hour_in_planning2[0]), minutes = int(get_hour_in_planning2[1]))
+        print(hour2)
+        self.planning.loc[day,"temp "+ categorie] =  hour2 + time
+        self.planning.loc[day, categorie] = None
+        self.planning.to_csv("planning.csv")
+
+alfred = Planning_Alfredv1()
+day = alfred.planning_day()
+time = alfred.add_planning("Code", day)
+print(time)
+alfred.stop(day, "Code", time)
 
 
-#planning.to_csv("planning.csv")
+
