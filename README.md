@@ -1,5 +1,5 @@
 <p align="center">
-  <h1>Alfred-V1</h1><br/>
+  <h1 align="center">Alfred-V1</h1><br/>
  </p>
 <p align="center">
   <img src="images/Alfred_icon.jpg">
