@@ -1,6 +1,6 @@
 <p align="center">
-<h1>Alfred-V1</h1><br/>
-<img src="images/Alfred_icon.jpg">
+  <h1>Alfred-V1</h1><br/>
+  <img src="images/Alfred_icon.jpg">
 </p>
 
 ## Features
