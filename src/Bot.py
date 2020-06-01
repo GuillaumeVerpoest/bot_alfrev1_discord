@@ -4,7 +4,7 @@ from discord.ext import commands
 from main import *
 
 #jeton de alfredv1
-jeton = "NzEzMDA0NjQyNDM0NTQ3NzE1.XszVqA.lw90CCsKg0BZ37wBuf6M2ecbNzo"
+jeton = yout token
 bot = commands.Bot(command_prefix=('!'))
 
 #evail de alfredv1
